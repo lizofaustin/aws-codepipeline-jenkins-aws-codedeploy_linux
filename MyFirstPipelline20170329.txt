@@ -1,0 +1,90 @@
+{
+    "pipeline": {
+        "name": "MyFirstPipeline",
+        "roleArn": "arn:aws:iam::777069157018:role/AWS-CodePipeline-Service",
+        "artifactStore": {
+            "type": "S3",
+            "location": "codepipeline-us-west-2-461663905924"
+        },
+        "stages": [
+            {
+                "name": "Source",
+                "actions": [
+                    {
+                        "name": "Source",
+                        "actionTypeId": {
+                            "category": "Source",
+                            "owner": "ThirdParty",
+                            "provider": "GitHub",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "configuration": {
+                            "Branch": "master",
+                            "OAuthToken": "****",
+                            "Owner": "lizofaustin",
+                            "Repo": "aws_sample_app"
+                        },
+                        "outputArtifacts": [
+                            {
+                                "name": "MyApp"
+                            }
+                        ],
+                        "inputArtifacts": []
+                    }
+                ]
+            },
+            {
+                "name": "Beta",
+                "actions": [
+                    {
+                        "name": "CodePipelineDemoFleet",
+                        "actionTypeId": {
+                            "category": "Deploy",
+                            "owner": "AWS",
+                            "provider": "CodeDeploy",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "configuration": {
+                            "ApplicationName": "CodePipelineDemoFleet",
+                            "DeploymentGroupName": "CodePipelineDemoFleet"
+                        },
+                        "outputArtifacts": [],
+                        "inputArtifacts": [
+                            {
+                                "name": "MyApp"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Production",
+                "actions": [
+                    {
+                        "name": "Deploy-Second-Deployment.",
+                        "actionTypeId": {
+                            "category": "Deploy",
+                            "owner": "AWS",
+                            "provider": "CodeDeploy",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "configuration": {
+                            "ApplicationName": "CodePipelineDemoFleet",
+                            "DeploymentGroupName": "CodePipelineProductionFleet"
+                        },
+                        "outputArtifacts": [],
+                        "inputArtifacts": [
+                            {
+                                "name": "MyApp"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "version": 2
+    }
+}
